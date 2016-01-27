@@ -1,0 +1,30 @@
+#! /usr/bin/python2.7
+
+# Converts a Prestia bank CSV file to QIF
+#
+# Usage: prestia_to_qif ${FILENAME} > out.qif
+
+import csv
+import os
+import unicodedata
+import sys
+import re
+
+print '!Type:Bank'
+
+with open( sys.argv[1], 'rb') as csvfile:
+	rows = csv.reader(csvfile, delimiter=',')
+	for row in rows:
+	  date = row[0]
+	  payee = row[1].decode('shift-jis').encode('utf-8')
+	  payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
+	  payee = re.sub("\s\s+", " ", payee)
+	  amount = row[2]
+
+	  print 'D' + date
+	  print 'T' + amount
+	  print 'P' + payee.encode('UTF-8')
+	  print 'M'
+	  print '^'
+	  print
+
