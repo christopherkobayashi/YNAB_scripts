@@ -1,4 +1,11 @@
 #! /usr/bin/python2.7
+# -*- coding: utf8 -*-
+
+
+# This script takes a CSV file manually downloaded from Sumitomo-Mitsui Bank,
+# converts it to Unicode, and rearranges it into QIF format.
+# Charges spread out over multiple months ("kai") are handled.
+# Charges in foreign currency are noted and the exchange rate is calculated.
 
 import csv
 import os
@@ -20,13 +27,15 @@ with open( sys.argv[1], 'rb') as csvfile:
 	  payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
 	  payee = re.sub("\s\s+", " ", payee)
 	  amount = row[6]
-	  comment = row[2] + ' ' + row[3] + ' ' + row[5]
-	  if row[10] != "JPY":
+	  # if the charge is made by someone other than you, add it)
+	  if row[2] != "ご本人":
+	    comment = row[2] + ' '
+	  comment = 'Period: ' + row[5]
+	  if row[10] and row[10] != "JPY":
 	    comment = comment + ' ' + row[10]
-	    comment = comment + ' ' + row[9]
-	    comment = comment + ' ' + row[11]
+	    comment = comment + ' ' + row[11] + ' (' + row[9] + ')'
 	  if row[4]:
-	    comment = comment + ' ' + row[4]
+	    comment = comment + ' (' + row[4] + ')'
 	    newmonth = int(month)+(int(row[4][1])-1)
 	    if newmonth > 12:
 		newmonth = newmonth - 12
@@ -36,6 +45,7 @@ with open( sys.argv[1], 'rb') as csvfile:
 	    trans_date = date(int(year), int(month), int(day))
 	  comment = comment.decode('shift-jis').encode('utf-8')
 	  comment = unicodedata.normalize('NFKC', comment.decode('utf8'))
+	  comment = re.sub("\s\s+", " ", comment)
 
 	  amount = -int(amount)
 
