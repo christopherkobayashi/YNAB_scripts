@@ -1,5 +1,14 @@
 #! /usr/bin/python2.7
 
+# This script takes a CSV file manually downloaded from Sumitomo-Mitsui Bank
+# web site (https://direct.smbc.co.jp/aib/aibgsjsw5001.jsp), converts it to
+# Unicode, and rearranges it into QIF format.
+#
+# Run this on the CSV that the web site provides, and not the OFX file.
+# iBank honors the time zone offset field, but does not itself have an internal
+# timezone, so Japanese users of iBank will see their transactions shifted a day
+# if the OFX file is used.
+
 import csv
 import os
 import unicodedata

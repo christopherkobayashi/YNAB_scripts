@@ -1,5 +1,9 @@
 #! /usr/bin/python2.7
 
+# This script takes the ofx.qif output from American Express Japan website,
+# converts to Unicode, calculates foreign exchange rate if any, and emits a
+# QIF.
+
 import csv
 import os
 import unicodedata
