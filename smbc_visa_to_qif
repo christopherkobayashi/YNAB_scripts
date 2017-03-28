@@ -2,8 +2,9 @@
 # -*- coding: utf8 -*-
 
 
-# This script takes a CSV file manually downloaded from Sumitomo-Mitsui Bank,
-# converts it to Unicode, and rearranges it into QIF format.
+# This script takes a CSV file manually downloaded from Sumitomo-Mitsui Bank
+# Card web site (https://www.smbc-card.com), converts it to Unicode, and
+# rearranges it into QIF format.
 # Charges spread out over multiple months ("kai") are handled.
 # Charges in foreign currency are noted and the exchange rate is calculated.
 
