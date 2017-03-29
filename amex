@@ -30,10 +30,8 @@ with open ( sys.argv[1], 'r' ) as file:
 	    	orig_amount = forex[0].replace(',','')
 		orig_amount = float(orig_amount[1:])
 	    	rate = amount / orig_amount
-	    	print line.encode('UTF-8') + " rate", rate , orig_currency + "/JPY"
+	    	line = line + " rate: " + str(rate) + " " + str(orig_currency) + "/JPY"
 	    if line[0] == "P":
 		rep = u"\u2212"
 		line = line.replace("?", rep)
-		print line.encode('UTF-8')
-	    else:
-	    	print line.encode('UTF-8')
+	    print line.encode('UTF-8')
