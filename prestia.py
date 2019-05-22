@@ -25,6 +25,10 @@ import time
 from datetime import date
 from datetime import datetime
 
+if len(sys.argv) is not 2:
+	print ("prestia.py: must specify an input file.")
+	exit (1)
+
 print ('!Type:Bank')
 
 with open( sys.argv[1], 'rb') as csvfile:

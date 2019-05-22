@@ -33,6 +33,10 @@ import time
 from datetime import date
 from datetime import datetime
 
+if len(sys.argv) is not 2:
+	print ("smbc_visa.py: must specify an input file.")
+	exit (1)
+
 print ('!Type:CCard')
 
 first_line = 0

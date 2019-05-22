@@ -30,6 +30,10 @@ from decimal import *
 from datetime import date
 from datetime import datetime
 
+if len(sys.argv) is not 2:
+	print ("amex.py: must specify an input file.")
+	exit (1)
+
 with open ( sys.argv[1], 'r' ) as file:
 	for line in file:
 		line = line.decode('shift-jis').encode('utf8')
