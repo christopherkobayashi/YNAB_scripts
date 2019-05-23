@@ -32,7 +32,7 @@ if len(sys.argv) is not 2:
 
 print ('!Type:Bank')
 
-with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
+with open( sys.argv[1], 'rb') as csvfile:
 	rows = csv.reader(csvfile, delimiter=',')
 
 	for row in rows:
@@ -40,8 +40,8 @@ with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
 			break
 		year, month, day = row[0].split('/')
 		trans_date = date(int(year), int(month), int(day))
-		payee = row[1]
-		payee = unicodedata.normalize('NFKC', payee)
+		payee = row[1].decode('shift-jis').encode('utf-8')
+		payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
 		payee = re.sub("\s\s+", " ", payee)
 		amount = int( (row[2].replace(',','').split())[0])
 		comment = row[3].replace('\'','')

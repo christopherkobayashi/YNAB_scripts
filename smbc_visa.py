@@ -44,7 +44,7 @@ first_line = 0
 ymd_field = 0
 payee_field = 1
 
-with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
+with open( sys.argv[1], 'rb' ) as csvfile:
 	rows = csv.reader(csvfile, delimiter=',')
 	for row in rows:
 
@@ -71,8 +71,8 @@ with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
 
 		year, month, day = row[ymd_field].split('/')
 		trans_date = date(int(year), int(month), int(day))
-		payee = row[payee_field]
-		payee = unicodedata.normalize('NFKC', payee)
+		payee = row[payee_field].decode('shift-jis').encode('utf-8')
+		payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
 		payee = re.sub("\s\s+", " ", payee)
 		amount = row[amount_field]
 
@@ -95,7 +95,8 @@ with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
 		else:
 				comment = row[comment_field]
 
-		comment = unicodedata.normalize('NFKC', comment)
+		comment = comment.decode('shift-jis').encode('utf-8')
+		comment = unicodedata.normalize('NFKC', comment.decode('utf8'))
 		comment = re.sub("\s\s+", " ", comment)
 
 		amount = -int(amount)
