@@ -1,28 +1,27 @@
 #! /usr/bin/env python2.7
 # -*- coding: utf8 -*-
 
-#    smbc_visa.py
-#    Copyright (C) 2019 Christopher Kobayashi <software+github@disavowed.jp>
+#	smbc_visa.py
+#	Copyright (C) 2019 Christopher Kobayashi <software+github@disavowed.jp>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
-# This script takes a CSV file manually downloaded from Sumitomo-Mitsui Bank
-# Card web site (https://www.smbc-card.com), converts it to Unicode, and
-# rearranges it into QIF format.
-# Charges spread out over multiple months ("kai") are handled.
-# Charges in foreign currency are noted and the exchange rate is calculated.
+#	This script takes a CSV file manually downloaded from Sumitomo-Mitsui Bank
+#	Card web site (https://www.smbc-card.com), converts it to Unicode, and
+#	rearranges it into QIF format.
+#	Charges spread out over multiple months ("kai") are handled.
+#	Charges in foreign currency are noted and the exchange rate is calculated.
 
 import csv
 import os
@@ -30,6 +29,7 @@ import unicodedata
 import sys
 import re
 import time
+import codecs
 from datetime import date
 from datetime import datetime
 
@@ -44,7 +44,7 @@ first_line = 0
 ymd_field = 0
 payee_field = 1
 
-with open( sys.argv[1], 'rb') as csvfile:
+with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
 	rows = csv.reader(csvfile, delimiter=',')
 	for row in rows:
 
@@ -71,8 +71,8 @@ with open( sys.argv[1], 'rb') as csvfile:
 
 		year, month, day = row[ymd_field].split('/')
 		trans_date = date(int(year), int(month), int(day))
-		payee = row[payee_field].decode('shift-jis').encode('utf-8')
-		payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
+		payee = row[payee_field]
+		payee = unicodedata.normalize('NFKC', payee)
 		payee = re.sub("\s\s+", " ", payee)
 		amount = row[amount_field]
 
@@ -95,8 +95,7 @@ with open( sys.argv[1], 'rb') as csvfile:
 		else:
 				comment = row[comment_field]
 
-		comment = comment.decode('shift-jis').encode('utf-8')
-		comment = unicodedata.normalize('NFKC', comment.decode('utf8'))
+		comment = unicodedata.normalize('NFKC', comment)
 		comment = re.sub("\s\s+", " ", comment)
 
 		amount = -int(amount)

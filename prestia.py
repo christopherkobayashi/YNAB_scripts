@@ -1,20 +1,20 @@
 #! /usr/bin/env python2.7
 
-#    prestia.py
-#    Copyright (C) 2019 Christopher Kobayashi <software+github@disavowed.jp>
+#	prestia.py
+#	Copyright (C) 2019 Christopher Kobayashi <software+github@disavowed.jp>
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#	This program is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#	GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#	You should have received a copy of the GNU General Public License
+#	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import csv
 import os
@@ -22,6 +22,7 @@ import unicodedata
 import sys
 import re
 import time
+import codecs
 from datetime import date
 from datetime import datetime
 
@@ -31,7 +32,7 @@ if len(sys.argv) is not 2:
 
 print ('!Type:Bank')
 
-with open( sys.argv[1], 'rb') as csvfile:
+with codecs.open( sys.argv[1], 'rb', 'shift-jis') as csvfile:
 	rows = csv.reader(csvfile, delimiter=',')
 
 	for row in rows:
@@ -39,8 +40,8 @@ with open( sys.argv[1], 'rb') as csvfile:
 			break
 		year, month, day = row[0].split('/')
 		trans_date = date(int(year), int(month), int(day))
-		payee = row[1].decode('shift-jis').encode('utf-8')
-		payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
+		payee = row[1]
+		payee = unicodedata.normalize('NFKC', payee)
 		payee = re.sub("\s\s+", " ", payee)
 		amount = int( (row[2].replace(',','').split())[0])
 		comment = row[3].replace('\'','')
