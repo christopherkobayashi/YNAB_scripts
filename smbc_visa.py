@@ -74,11 +74,10 @@ with open( sys.argv[1], 'rb' ) as csvfile:
 		payee = row[payee_field].decode('shift-jis').encode('utf-8')
 		payee = unicodedata.normalize('NFKC', payee.decode('utf8'))
 		payee = re.sub("\s\s+", " ", payee)
-		if type is 1:
-			if row[amount_field+1]:
-				amount = row[amount_field+1]
-		else:
+		if type is 1 and row[amount_field+1].isdigit():
 			amount = row[amount_field+1]
+		else:
+			amount = row[amount_field]
 
 		if type is 1:
 			# if the charge is made by someone other than you, add it)
