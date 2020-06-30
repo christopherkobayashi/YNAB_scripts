@@ -46,23 +46,24 @@ with open(sys.argv[1], 'rb') as csvfile:
     rows = csv.reader(csvfile, delimiter=',')
     for row in rows:
 
-        if len(row) < 7:
-            continue
-        elif len(row) == 7:  # settled statement
-            amount_field = 5
+        # settled statement (ignore summary rows)
+        if len(row) == 7 and row[1]:
             period_count = 3
             period_field = 4
+            amount_field = 5
             comment_field = 6
             type = 2
-        else:  # unsettled statement
-            amount_field = 6
+        elif len(row) == 13 and row[1]:  # unsettled statement
             period_field = 2
-            period_count = 5
-            currency_field = 10
-            amount_foreign = 9
-            amount_ratio = 11
             comment_field = 4
+            period_count = 5
+            amount_field = 6
+            amount_foreign = 9
+            currency_field = 10
+            amount_ratio = 11
             type = 1
+        else:
+            continue
 
         # if date field is empty, re-use previous date
         if row[ymd_field]:
@@ -77,23 +78,23 @@ with open(sys.argv[1], 'rb') as csvfile:
             amount = row[amount_field]
 
         if type is 1:
-            # if the charge is made by someone other than you, add it)
+            # add detail about family card if used
             if row[period_field] != "ご本人" and row[period_field] != 1:
                 comment = row[period_field] + ' '
             comment = 'Period: ' + row[period_count]
+            # calculate foreign exchange rate if used
             if row[currency_field] and row[currency_field] != "JPY":
                 comment = comment + ' ' + \
                     row[currency_field] + ' ' + row[amount_ratio] + \
                     ' (' + row[amount_foreign] + ')'
+            # calculate multiple-payment data if applicable
             if row[comment_field]:
                 comment = comment + ' (' + row[comment_field] + ')'
-                newmonth = int(month)+(int(row[comment_field][1])-1)
-                if newmonth > 12:
-                    newmonth = newmonth - 12
-                    newyear = int(year)+1
-                    year = str(newyear)
-                month = str(newmonth)
-                trans_date = date(int(year), int(month), int(day))
+                month = int(month)+(int(row[comment_field][1])-1)
+                if month > 12:
+                    month = month - 12
+                    year = str(int(year)+1)
+                trans_date = date(int(year), int((str(month))), int(day))
         else:
             comment = row[comment_field]
 
