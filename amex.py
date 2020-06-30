@@ -16,9 +16,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#	This script takes the ofx.qif output from American Express Japan website,
-#	converts to Unicode, calculates foreign exchange rate if any, and emits a
-#	QIF.
+#	This script takes the ofx.qif output from American Express Japan
+#	website, converts to Unicode, calculates foreign exchange rate if any,
+#	and emits a QIF.
 
 import csv
 import os
@@ -32,26 +32,27 @@ from datetime import date
 from datetime import datetime
 
 if len(sys.argv) is not 2:
-	print ("amex.py: must specify an input file.")
-	exit (1)
+    print("amex.py: must specify an input file.")
+    exit(1)
 
-with codecs.open ( sys.argv[1], 'r', 'shift-jis' ) as file:
-	for line in file:
-		line = unicodedata.normalize('NFKC', line)
-		line = re.sub("\s\s+", " ", line)
-		line = line.rstrip(" ")
-		if line:
-			if line[0] == "T":
-				amount = abs(float(line[1:].replace(',','')))
-				line = line.replace(',','')
-			if line[0] == "M" and len(line) > 2:
-				forex = line.split(" ")
-				orig_currency = forex[1]
-				orig_amount = forex[0].replace(',','')
-				orig_amount = float(orig_amount[1:])
-				rate = amount / orig_amount
-				line = line + " rate: " + str(rate) + " " + str(orig_currency) + "/JPY"
-			if line[0] == "P":
-				rep = u"\u2212"
-				line = line.replace("?", rep)
-		print (line.encode('utf8'))
+with codecs.open(sys.argv[1], 'r', 'shift-jis') as file:
+    for line in file:
+        line = unicodedata.normalize('NFKC', line)
+        line = re.sub("\s\s+", " ", line)
+        line = line.rstrip(" ")
+        if line:
+            if line[0] == "T":
+                amount = abs(float(line[1:].replace(',', '')))
+                line = line.replace(',', '')
+            if line[0] == "M" and len(line) > 2:
+                forex = line.split(" ")
+                orig_currency = forex[1]
+                orig_amount = forex[0].replace(',', '')
+                orig_amount = float(orig_amount[1:])
+                rate = amount / orig_amount
+                line = line + " rate: " + \
+                    str(rate) + " " + str(orig_currency) + "/JPY"
+            if line[0] == "P":
+                rep = u"\u2212"
+                line = line.replace("?", rep)
+        print(line.encode('utf8'))
